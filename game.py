@@ -41,7 +41,7 @@ class Game:
         if 'right' in inputs:
             self.movement[3] = 1
 
-        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) / 2, (self.movement[1] - self.movement[0])])
+        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) / 2, (self.movement[1] - self.movement[0]) / 2])
         self.cam_follow(self.player.pos, 5, (self.player.rect().width / 2, self.player.rect().height / 2))
 
         self.clock.tick(FPS)

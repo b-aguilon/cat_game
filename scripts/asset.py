@@ -14,7 +14,8 @@ def load_assets():
         'dirt' : load_images('tiles/dirt'),
         'stone' : load_images('tiles/stone'),
         'ramp' : load_images('tiles/ramp'),
-        'decor' : load_images('tiles/decor')
+        'decor' : load_images('tiles/decor'),
+        'cat' : load_image('entities/player/cat.png')
     })
 
 def load_image(path):

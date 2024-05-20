@@ -55,7 +55,7 @@ class Collider:
             self.pos[1] = erect.y
         
     def draw(self, surf, scroll=(0,0)):
-        surf.blit(assets['dirt'][0], (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
+        surf.blit(assets['cat'], (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
 
 class Ramp:
     def __init__(self, pos, size, face):

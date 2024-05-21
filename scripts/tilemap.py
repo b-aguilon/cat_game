@@ -8,14 +8,14 @@ NEAR_TILES = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 
               (-2, 0), (2, 0), (0, -2), (0, 2), (-2, -2), (2, -2), (-2, 2), (2, 2), (0, 0)]
 
 class Tilemap:
-    def __init__(self, game, tile_size=16):
-        self.game = game
+    def __init__(self, state, tile_size=16):
+        self.state = state
         self.tile_size = tile_size
         self.tilemap = {}
         self.offgrid = {}
     
     def draw(self, surf, scroll=(0, 0)):
-        dim = self.game.DIMENSIONS
+        dim = self.state.dimensions
 
         for key in self.offgrid:
             tile = self.offgrid[key]

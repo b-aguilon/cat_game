@@ -9,7 +9,7 @@ class Editor:
     def __init__(self):
         pygame.init()
         pygame.display.init()
-        pygame.display.set_caption('game')
+        pygame.display.set_caption('editor')
         self.DIMENSIONS = (320, 180)
         self.display = pygame.Surface(self.DIMENSIONS)
         self.screen = pygame.display.set_mode((1280, 720))

@@ -10,8 +10,8 @@ class Editor:
         pygame.init()
         pygame.display.init()
         pygame.display.set_caption('editor')
-        self.DIMENSIONS = (320, 180)
-        self.display = pygame.Surface(self.DIMENSIONS)
+        self.dimensions = (320, 180)
+        self.display = pygame.Surface(self.dimensions)
         self.screen = pygame.display.set_mode((1280, 720))
         self.render_scale = 4
         self.clock = pygame.time.Clock()
@@ -43,9 +43,9 @@ class Editor:
     def set_buttons(self):
         j = 0
         for i in range(0, len(tiles)):
-            if ((i+1) - (j*i)) * self.tilemap.tile_size > self.DIMENSIONS[0]:
+            if ((i+1) - (j*i)) * self.tilemap.tile_size > self.dimensions[0]:
                 j += 1
-            self.tile_buttons.append(pygame.Rect((i - (j*(self.DIMENSIONS[0] // self.tilemap.tile_size)))*self.tilemap.tile_size, j*self.tilemap.tile_size, self.tilemap.tile_size, self.tilemap.tile_size))
+            self.tile_buttons.append(pygame.Rect((i - (j*(self.dimensions[0] // self.tilemap.tile_size)))*self.tilemap.tile_size, j*self.tilemap.tile_size, self.tilemap.tile_size, self.tilemap.tile_size))
     
     def get_mpos(self):
         mpos = pygame.mouse.get_pos()

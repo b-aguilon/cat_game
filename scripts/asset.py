@@ -11,10 +11,8 @@ def load_assets():
         raise Exception('assets already loaded')
 
     assets.update({
-        'dirt' : load_images('tiles/dirt'),
-        'stone' : load_images('tiles/stone'),
+        'road' : load_images('tiles/road'),
         'ramp' : load_images('tiles/ramp'),
-        'decor' : load_images('tiles/decor'),
         'cat' : load_image('entities/player/cat.png')
     })
 

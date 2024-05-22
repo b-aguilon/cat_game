@@ -3,7 +3,7 @@ import pygame
 from scripts.asset import assets
 from scripts.entities import Ramp
 
-PHYS_TILE_RECTS = {'dirt', 'stone'}
+PHYS_TILE_RECTS = {'road', 'stone'}
 NEAR_TILES = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1),
               (-2, 0), (2, 0), (0, -2), (0, 2), (-2, -2), (2, -2), (-2, 2), (2, 2), (0, 0)]
 

@@ -10,13 +10,13 @@ class Editor:
         pygame.init()
         pygame.display.init()
         pygame.display.set_caption('editor')
-        self.dimensions = (320, 180)
+        self.dimensions = (640, 360)
         self.display = pygame.Surface(self.dimensions)
-        self.screen = pygame.display.set_mode((1280, 720))
-        self.render_scale = 4
+        self.screen = pygame.display.set_mode((1920, 1080))
+        self.render_scale = 3
         self.clock = pygame.time.Clock()
         load_assets()
-        self.tilemap = Tilemap(self)
+        self.tilemap = Tilemap(self, 32)
         self.path = 'map.json'
 
         self.tile_selection = False
@@ -32,8 +32,6 @@ class Editor:
         self.hovering_tile = None
 
         self.clicks = (0, 0, 0)
-
-        self.tilemap.load(self.path)
 
     def main(self):
         while True:            

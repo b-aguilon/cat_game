@@ -96,7 +96,7 @@ class Gameplay(State):
         self.clock.tick(FPS)
 
     def draw(self):
-        self.display.fill((100, 100, 125))
+        self.display.fill((0, 0, 0))
         
         draw_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 

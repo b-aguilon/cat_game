@@ -13,12 +13,11 @@ def load_assets():
     assets.update({
         'road' : load_images('tiles/road'),
         'ramp' : load_images('tiles/ramp'),
-        'cat' : load_image('entities/player/cat.png')
+        'cat' : load_image('entities/player/cat.png'),
     })
 
 def load_image(path):
-    img = pygame.image.load(IMAGE_PATH + path).convert()
-    img.set_colorkey((0, 0, 0))
+    img = pygame.image.load(IMAGE_PATH + path).convert_alpha()
     return img
 
 def load_images(path):

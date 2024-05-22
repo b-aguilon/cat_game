@@ -1,7 +1,7 @@
 import pygame
 import sys
 from scripts.asset import load_assets
-from scripts.states import Gameplay, Test
+from scripts.states import Gameplay
 
 FPS = 60
 

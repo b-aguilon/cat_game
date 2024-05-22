@@ -14,33 +14,30 @@ class Collider:
     def update(self, tilemap, movement=(0,0), friction=0.2):   
         self.velocity = [self.velocity[0] + movement[0], self.velocity[1] + movement[1]]
         self.velocity[1] += 0.25
-        self.velocity[1] = min(self.velocity[1], 7)
+        self.velocity[1] = min(self.velocity[1], 8)
         self.velocity[0] = pygame.math.lerp(self.velocity[0], 0, friction)
-        self.collisions(tilemap)
+        self.rect_collisions(tilemap)
+        self.pos[0] += self.velocity[0]
+        self.pos[1] += self.velocity[1]
+        self.ramp_collisions(tilemap)
 
-    def collisions(self, tilemap):
-        self.pos[0] += self.velocity[0] 
-        erect = self.rect()
-        for rect in tilemap.near_rects(self.pos):
-            if erect.colliderect(rect):
-                if self.velocity[0] > 0:
-                    erect.right = rect.left
-                if self.velocity[0] < 0:
-                    erect.left = rect.right
-                self.velocity[0] = 0
-                self.pos[0] = erect.x
+    def touching_right(self, other):
+        bounds = self.rect()
+        return bounds.left + self.velocity[0] < other.right and bounds.bottom > other.top and bounds.top < other.bottom and bounds.left > other.left
+    
+    def touching_top(self, other):
+        bounds = self.rect()
+        return bounds.bottom + self.velocity[1] > other.top and bounds.left < other.right and bounds.right > other.left and bounds.top < other.top
 
-        self.pos[1] += self.velocity[1] 
-        erect = self.rect()
-        for rect in tilemap.near_rects(self.pos):
-            if erect.colliderect(rect):
-                if self.velocity[1] > 0:
-                    erect.bottom = rect.top
-                if self.velocity[1] < 0:
-                    erect.top = rect.bottom
-                self.velocity[1] = 0
-                self.pos[1] = erect.y
-        #I AM SO FUCKING
+    def touching_bottom(self, other):
+        bounds = self.rect()
+        return bounds.top + self.velocity[1] < other.bottom and bounds.left < other.right and bounds.right > other.left and bounds.bottom > other.bottom
+    
+    def touching_left(self, other):
+        bounds = self.rect()
+        return bounds.right + self.velocity[0] > other.left and bounds.top < other.bottom and bounds.bottom > other.top and bounds.right < other.right
+    
+    def ramp_collisions(self, tilemap):
         erect = self.rect()
         for ramp in tilemap.near_ramps(self.pos):
             if not erect.colliderect(ramp.bounds) or self.velocity[1] < 0:
@@ -53,6 +50,21 @@ class Collider:
                 self.velocity[1] = 0
             
             self.pos[1] = erect.y
+
+    def rect_collisions(self, tilemap):
+        for rect in tilemap.near_rects(self.pos):
+            if self.touching_top(rect):
+                self.pos[1] = rect.top - self.rect().height
+                self.velocity[1] = 0
+            if self.touching_bottom(rect):
+                self.pos[1] = rect.bottom
+                self.velocity[1] = 0
+            if self.touching_right(rect):
+                self.pos[0] = rect.right
+                self.velocity[0] = 0
+            if self.touching_left(rect):
+                self.pos[0] = rect.left - self.rect().width
+                self.velocity[0] = 0
         
     def draw(self, surf, scroll=(0,0)):
         surf.blit(assets['cat'], (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))

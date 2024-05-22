@@ -44,10 +44,10 @@ class Collider:
                 continue
             if erect.bottom >= ramp.top_at(self.pos[0] + self.size[0])[1] and ramp.face == 'left':
                 erect.bottom = ramp.top_at(self.pos[0] + self.size[0])[1]
-                self.velocity[1] = 0
+                self.velocity[1] = -self.velocity[0] if self.velocity[0] < 0 else 0
             elif erect.bottom >= ramp.top_at(self.pos[0])[1] and ramp.face == 'right':
                 erect.bottom = ramp.top_at(self.pos[0])[1]
-                self.velocity[1] = 0
+                self.velocity[1] = self.velocity[0] if self.velocity[0] > 0 else 0
             
             self.pos[1] = erect.y
 
@@ -66,6 +66,16 @@ class Collider:
                 self.pos[0] = rect.left - self.rect().width
                 self.velocity[0] = 0
         
+    def draw(self, surf, scroll=(0,0)):
+        pass
+
+class Cat(Collider):
+    def __init__(self, game, pos, size, _type='cat'):
+        super().__init__(_type, game, pos, size)
+
+    def jump(self):
+        self.velocity[1] = -4
+
     def draw(self, surf, scroll=(0,0)):
         surf.blit(assets['cat'], (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
 

@@ -2,7 +2,7 @@ import pygame
 import ctypes
 from scripts.asset import assets
 from scripts.tilemap import Tilemap
-from scripts.entities import Collider
+from scripts.entities import Cat
 
 FPS = 60
 
@@ -74,7 +74,7 @@ class Gameplay(State):
 
         self.scroll = [0, 0]
         self.movement = [0, 0, 0, 0]
-        self.player = Collider('player', self, (100, 100), (16, 16))
+        self.player = Cat(self, (100, 100), (16, 16))
 
     def update(self, inputs):
         self.movement = [0, 0, 0, 0]
@@ -87,6 +87,8 @@ class Gameplay(State):
             self.movement[2] = 1
         if 'right' in inputs:
             self.movement[3] = 1
+        if 'jump' in inputs:
+            self.player.jump()
         
         self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) / 2, (self.movement[1] - self.movement[0]) / 2])
         self.cam_follow(self.player.pos, 5, (self.player.rect().width / 2, self.player.rect().height / 2))

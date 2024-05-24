@@ -74,7 +74,9 @@ class Gameplay(State):
 
         self.scroll = [0, 0]
         self.movement = [0, 0, 0, 0]
-        self.player = Cat(self, (100, 100), (16, 16))
+        self.player = Cat(self, (100, 70), (32, 16))
+        self.plr_speed = 0.5
+        self.enemies = []
 
     def update(self, inputs):
         self.movement = [0, 0, 0, 0]
@@ -90,7 +92,7 @@ class Gameplay(State):
         if 'jump' in inputs:
             self.player.jump()
         
-        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) / 2, (self.movement[1] - self.movement[0]) / 2])
+        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) * self.plr_speed, 0])
         self.cam_follow(self.player.pos, 5, (self.player.rect().width / 2, self.player.rect().height / 2))
 
         self.clock.tick(FPS)
@@ -107,6 +109,20 @@ class Gameplay(State):
     def cam_follow(self, pos, lag=1, offset=(0,0)):
         self.scroll[0] += ((pos[0] - self.scroll[0]) - (self.dimensions[0] / 2 - offset[0])) / lag
         self.scroll[1] += ((pos[1] - self.scroll[1]) - (self.dimensions[1] / 2 - offset[1])) / lag
+    
+    # def set_spawners(self):
+    #     for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+    #         if spawner['variant'] == 0:
+    #             self.player.pos = spawner['pos']
+    #         else:
+    #             self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
+    
+    # def update_enemies(self, draw_scroll):
+    #     for enemy in self.enemies.copy():
+    #         kill = enemy.update(self.tilemap, (0, 0))
+    #         enemy.render(self.display, offset=draw_scroll)
+    #         if kill:
+    #             self.enemies.remove(enemy)
 
 class Test(State):
     def __init__(self, game):

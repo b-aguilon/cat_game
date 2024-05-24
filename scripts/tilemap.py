@@ -44,6 +44,24 @@ class Tilemap:
                 else:
                     surf.blit(pygame.transform.flip(img, True, False), (tile['pos'][0] * self.tile_size - scroll[0], tile['pos'][1] * self.tile_size - scroll[1]))
     
+    def extract(self, idPairs, keep=False):
+        matches = []
+        for tile in self.offgridTiles.copy():
+            if (tile['type'], tile['variant']) in idPairs:
+                matches.append(tile.copy())
+                if not keep:
+                    self.offgridTiles.remove(tile)
+        
+        for pos in self.tilemap.copy():
+            tile = self.tilemap[pos]
+            if (tile['type'], tile['variant']) in idPairs:
+                matches.append(tile.copy())
+                matches[-1]['pos'] = matches[-1]['pos'].copy()
+                matches[-1]['pos'][0] *= self.tileSize
+                matches[-1]['pos'][1] *= self.tileSize
+                if not keep: 
+                    del self.tilemap[pos]
+
     def near_tiles(self, pos):
         tiles = []
         loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))

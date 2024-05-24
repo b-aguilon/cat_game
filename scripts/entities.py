@@ -1,4 +1,5 @@
 import pygame
+import math
 from scripts.asset import assets
 
 class Collider:
@@ -8,18 +9,26 @@ class Collider:
         self.pos = list(pos)
         self.size = size
         self.velocity = [0, 0]
+        self.collisions = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
+        self.flip = False
 
-    def rect(self): return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
-
-    def update(self, tilemap, movement=(0,0), friction=0.2):   
+    def update(self, tilemap, movement=(0,0), friction=0.2):
+        for key in self.collisions:
+            self.collisions[key] = False  
         self.velocity = [self.velocity[0] + movement[0], self.velocity[1] + movement[1]]
         self.velocity[1] += 0.25
         self.velocity[1] = min(self.velocity[1], 8)
         self.velocity[0] = pygame.math.lerp(self.velocity[0], 0, friction)
+        if self.velocity[0] > 0:
+            self.flip = False
+        elif self.velocity[0] < 0:
+            self.flip = True
         self.rect_collisions(tilemap)
         self.pos[0] += self.velocity[0]
         self.pos[1] += self.velocity[1]
         self.ramp_collisions(tilemap)
+
+    def rect(self): return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
     def touching_right(self, other):
         bounds = self.rect()
@@ -40,7 +49,7 @@ class Collider:
     def ramp_collisions(self, tilemap):
         erect = self.rect()
         for ramp in tilemap.near_ramps(self.pos):
-            if not erect.colliderect(ramp.bounds) or self.velocity[1] < 0:
+            if not erect.colliderect(ramp.bounds) or (self.velocity[0] == 0 and self.velocity[1] < 0):
                 continue
             if erect.bottom >= ramp.top_at(self.pos[0] + self.size[0])[1] and ramp.face == 'left':
                 erect.bottom = ramp.top_at(self.pos[0] + self.size[0])[1]
@@ -48,21 +57,25 @@ class Collider:
             elif erect.bottom >= ramp.top_at(self.pos[0])[1] and ramp.face == 'right':
                 erect.bottom = ramp.top_at(self.pos[0])[1]
                 self.velocity[1] = self.velocity[0] if self.velocity[0] > 0 else 0
-            
+            self.collisions['down'] = True
             self.pos[1] = erect.y
 
     def rect_collisions(self, tilemap):
         for rect in tilemap.near_rects(self.pos):
             if self.touching_top(rect):
+                self.collisions['down'] = True
                 self.pos[1] = rect.top - self.rect().height
                 self.velocity[1] = 0
             if self.touching_bottom(rect):
+                self.collisions['up'] = True
                 self.pos[1] = rect.bottom
                 self.velocity[1] = 0
             if self.touching_right(rect):
+                self.collisions['left'] = True
                 self.pos[0] = rect.right
                 self.velocity[0] = 0
             if self.touching_left(rect):
+                self.collisions['right'] = True
                 self.pos[0] = rect.left - self.rect().width
                 self.velocity[0] = 0
         
@@ -74,10 +87,18 @@ class Cat(Collider):
         super().__init__(_type, game, pos, size)
 
     def jump(self):
+        if not self.collisions['down']:
+            return
         self.velocity[1] = -4
+        if self.velocity[0] != 0:
+            self.velocity[0] += self.velocity[0] * 10
 
     def draw(self, surf, scroll=(0,0)):
-        surf.blit(assets['cat'], (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
+        img = assets['cat']
+        if not self.flip:
+            surf.blit(img, (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
+        else:
+            surf.blit(pygame.transform.flip(img, True, False), (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
 
 class Ramp:
     def __init__(self, pos, size, face):

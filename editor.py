@@ -12,8 +12,8 @@ class Editor:
         pygame.display.set_caption('editor')
         self.dimensions = (640, 360)
         self.display = pygame.Surface(self.dimensions)
-        self.screen = pygame.display.set_mode((1920, 1080))
-        self.render_scale = 3
+        self.screen = pygame.display.set_mode((1280, 720))
+        self.render_scale = 2
         self.clock = pygame.time.Clock()
         load_assets()
         self.tilemap = Tilemap(self, 32)
@@ -30,8 +30,11 @@ class Editor:
         self.tile_buttons = []
         self.set_buttons()
         self.hovering_tile = None
+        self.scroll_speed = 4
 
         self.clicks = (0, 0, 0)
+
+        self.tilemap.load(self.path)
 
     def main(self):
         while True:            
@@ -130,7 +133,7 @@ class Editor:
 
         self.button_presses(self.clicks)
 
-        self.scroll = [self.scroll[0] + (self.movement[3] - self.movement[2])*2, self.scroll[1] + (self.movement[1] - self.movement[0])*2]
+        self.scroll = [self.scroll[0] + (self.movement[3] - self.movement[2])*self.scroll_speed, self.scroll[1] + (self.movement[1] - self.movement[0])*self.scroll_speed]
 
         self.clock.tick(FPS)
 

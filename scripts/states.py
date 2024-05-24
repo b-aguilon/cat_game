@@ -91,8 +91,10 @@ class Gameplay(State):
             self.movement[3] = 1
         if 'jump' in inputs:
             self.player.jump()
+        if 'dodge' in inputs:
+            self.player.dodge()
         
-        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) * self.plr_speed, 0])
+        self.player.update(self.tilemap, [(self.movement[3] - self.movement[2]) * self.plr_speed, 0], friction=0.16)
         self.cam_follow(self.player.pos, 5, (self.player.rect().width / 2, self.player.rect().height / 2))
 
         self.clock.tick(FPS)
@@ -100,15 +102,13 @@ class Gameplay(State):
     def draw(self):
         self.display.fill((0, 0, 0))
         
-        draw_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-
-        self.tilemap.draw(self.display, draw_scroll)
-        self.player.draw(self.display, draw_scroll)
+        self.tilemap.draw(self.display, self.scroll)
+        self.player.draw(self.display, self.scroll)
         super().draw()
     
     def cam_follow(self, pos, lag=1, offset=(0,0)):
-        self.scroll[0] += ((pos[0] - self.scroll[0]) - (self.dimensions[0] / 2 - offset[0])) / lag
-        self.scroll[1] += ((pos[1] - self.scroll[1]) - (self.dimensions[1] / 2 - offset[1])) / lag
+        self.scroll[0] += int(((pos[0] - self.scroll[0]) - (self.dimensions[0] / 2 - offset[0])) / lag)
+        self.scroll[1] += int(((pos[1] - self.scroll[1]) - (self.dimensions[1] / 2 - offset[1])) / lag)
     
     # def set_spawners(self):
     #     for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):

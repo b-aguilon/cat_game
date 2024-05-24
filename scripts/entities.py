@@ -11,6 +11,7 @@ class Collider:
         self.velocity = [0, 0]
         self.collisions = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
         self.flip = False
+        self.on_ramp = False
 
     def update(self, tilemap, movement=(0,0), friction=0.2):
         for key in self.collisions:
@@ -18,7 +19,9 @@ class Collider:
         self.velocity = [self.velocity[0] + movement[0], self.velocity[1] + movement[1]]
         self.velocity[1] += 0.25
         self.velocity[1] = min(self.velocity[1], 8)
+        friction = friction * 1.3 if self.on_ramp else friction
         self.velocity[0] = pygame.math.lerp(self.velocity[0], 0, friction)
+        self.on_ramp = False
         if self.velocity[0] > 0:
             self.flip = False
         elif self.velocity[0] < 0:
@@ -57,6 +60,7 @@ class Collider:
             elif erect.bottom >= ramp.top_at(self.pos[0])[1] and ramp.face == 'right':
                 erect.bottom = ramp.top_at(self.pos[0])[1]
                 self.velocity[1] = self.velocity[0] if self.velocity[0] > 0 else 0
+            self.on_ramp = True
             self.collisions['down'] = True
             self.pos[1] = erect.y
 
@@ -83,15 +87,30 @@ class Collider:
         pass
 
 class Cat(Collider):
-    def __init__(self, game, pos, size, _type='cat'):
-        super().__init__(_type, game, pos, size)
+    def __init__(self, game, pos, size):
+        super().__init__('cat', game, pos, size)
+        self.air_time = 0
+        self.jumps = 1
+        self.dodge_speed = 16
+    
+    def update(self, tilemap, movement=(0,0), friction=0.12):
+        super().update(tilemap, movement, friction)
+        self.jumps = 1
+        self.air_time += 1
+        if self.air_time > 6:
+            self.jumps = 0
+        if self.collisions['down']:
+            self.jumps = 1
+            self.air_time = 0
 
     def jump(self):
-        if not self.collisions['down']:
-            return
-        self.velocity[1] = -4
-        if self.velocity[0] != 0:
-            self.velocity[0] += self.velocity[0] * 10
+        if self.jumps > 0:
+            self.velocity[1] = -5
+            self.jumps = max(0, self.jumps - 1)
+    
+    def dodge(self):
+        if self.jumps > 0:
+            self.velocity[0] = self.dodge_speed if not self.flip else -self.dodge_speed
 
     def draw(self, surf, scroll=(0,0)):
         img = assets['cat']

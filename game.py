@@ -29,6 +29,8 @@ class Game:
             inputs.append('right')
         if just_pressed[pygame.K_SPACE]:
             inputs.append('jump')
+        if just_pressed[pygame.K_LSHIFT]:
+            inputs.append('dodge')
         if just_pressed[pygame.K_RETURN]:
             inputs.append('select')
         if just_pressed[pygame.K_ESCAPE]:

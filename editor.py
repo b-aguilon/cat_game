@@ -17,7 +17,7 @@ class Editor:
         self.clock = pygame.time.Clock()
         load_assets()
         self.tilemap = Tilemap(self, 32)
-        self.path = 'map.json'
+        self.path = 'json/maps/map.json'
 
         self.tile_selection = False
         self.scroll = [0, 0]

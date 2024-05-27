@@ -1,4 +1,5 @@
 import pygame
+import json
 import sys
 from scripts.asset import load_assets
 from scripts.states import Gameplay
@@ -12,8 +13,10 @@ class Game:
         pygame.display.set_caption('cat')
         self.state = Gameplay(self)
         load_assets()
-        self.held_inputmap = {pygame.K_a : 'left', pygame.K_d : 'right', pygame.K_w : 'up', pygame.K_s : 'down'}
-        self.just_pressed_inputmap = {pygame.K_SPACE : 'jump', pygame.K_RETURN : 'select', pygame.K_ESCAPE : 'back', pygame.K_LSHIFT : 'dodge'}
+        self.held_inputmap = {}
+        self.just_pressed_inputmap = {}
+        self.inputmap_path = 'json/inputmap.json'
+        self.load_inputmap()
 
     def main(self):
         while True:            
@@ -38,6 +41,26 @@ class Game:
                 sys.exit()
         
         return inputs
+    
+    def save_inputmap(self):
+        f = open(self.inputmap_path, 'w')
+        json.dump({'held' : self.held_inputmap, 'just_pressed' : self.just_pressed_inputmap}, f)
+        f.close()
+
+    def load_inputmap(self):
+        f = open(self.inputmap_path, 'r')
+        data = json.load(f)
+        self.held_inputmap = data['held']
+        self.just_pressed_inputmap = data['just_pressed']
+
+        for key in self.held_inputmap.copy():
+            new_key = int(key)
+            self.held_inputmap[new_key] = self.held_inputmap[key]
+            del self.held_inputmap[key]
+        for key in self.just_pressed_inputmap.copy():
+            new_key = int(key)
+            self.just_pressed_inputmap[new_key] = self.just_pressed_inputmap[key]
+            del self.just_pressed_inputmap[key]
 
     def change_state(self, state):
         self.state = state

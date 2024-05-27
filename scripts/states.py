@@ -70,7 +70,7 @@ class Gameplay(State):
     def __init__(self, game):
         super().__init__(game)
         self.tilemap = Tilemap(self)
-        self.tilemap.load('map.json')
+        self.tilemap.load('json/maps/map.json')
 
         self.scroll = [0, 0]
         self.movement = [0, 0, 0, 0]

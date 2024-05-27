@@ -12,6 +12,8 @@ class Game:
         pygame.display.set_caption('cat')
         self.state = Gameplay(self)
         load_assets()
+        self.held_inputmap = {pygame.K_a : 'left', pygame.K_d : 'right', pygame.K_w : 'up', pygame.K_s : 'down'}
+        self.just_pressed_inputmap = {pygame.K_SPACE : 'jump', pygame.K_RETURN : 'select', pygame.K_ESCAPE : 'back', pygame.K_LSHIFT : 'dodge'}
 
     def main(self):
         while True:            
@@ -23,18 +25,12 @@ class Game:
         just_pressed = pygame.key.get_just_pressed()
         held = pygame.key.get_pressed()
 
-        if held[pygame.K_a]:
-            inputs.append('left')
-        if held[pygame.K_d]:
-            inputs.append('right')
-        if just_pressed[pygame.K_SPACE]:
-            inputs.append('jump')
-        if just_pressed[pygame.K_LSHIFT]:
-            inputs.append('dodge')
-        if just_pressed[pygame.K_RETURN]:
-            inputs.append('select')
-        if just_pressed[pygame.K_ESCAPE]:
-            inputs.append('back')
+        for key in self.held_inputmap:
+            if held[key]:
+                inputs.append(self.held_inputmap[key])
+        for key in self.just_pressed_inputmap:
+            if just_pressed[key]:
+                inputs.append(self.just_pressed_inputmap[key])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

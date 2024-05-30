@@ -14,6 +14,7 @@ def load_assets():
         'road' : load_images('tiles/road'),
         'ramp' : load_images('tiles/ramp'),
         'cat' : load_image('entities/player/cat.png'),
+        'test_bg' : load_image('backgrounds/test_bg.png'),
     })
 
 def load_image(path):

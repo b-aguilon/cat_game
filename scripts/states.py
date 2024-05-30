@@ -102,6 +102,7 @@ class Gameplay(State):
     def draw(self):
         self.display.fill((0, 0, 0))
         
+        self.draw_background(assets['test_bg'], (0, -50), self.scroll, 0.2)
         self.tilemap.draw(self.display, self.scroll)
         self.player.draw(self.display, self.scroll)
         super().draw()
@@ -110,6 +111,13 @@ class Gameplay(State):
         self.scroll[0] += int(((pos[0] - self.scroll[0]) - (self.dimensions[0] / 2 - offset[0])) / lag)
         self.scroll[1] += int(((pos[1] - self.scroll[1]) - (self.dimensions[1] / 2 - offset[1])) / lag)
     
+    def draw_background(self, image, pos=(0,0), scroll=(0,0), depth=0.7):
+        scroll_pos = (pos[0] - scroll[0] * depth, pos[1] - scroll[1] * depth)
+        actual_pos = (scroll_pos[0] % (self.display.get_width() + image.get_width()) - image.get_width(), scroll_pos[1])
+        self.display.blit(image, actual_pos)
+        self.display.blit(image, (actual_pos[0] + image.get_width(), actual_pos[1]))
+        self.display.blit(image, (actual_pos[0] - image.get_width(), actual_pos[1]))
+
     # def set_spawners(self):
     #     for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
     #         if spawner['variant'] == 0:

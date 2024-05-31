@@ -113,7 +113,7 @@ class Gameplay(State):
     
     def draw_background(self, image, pos=(0,0), scroll=(0,0), depth=0.7):
         scroll_pos = (pos[0] - scroll[0] * depth, pos[1] - scroll[1] * depth)
-        actual_pos = (scroll_pos[0] % (self.display.get_width() + image.get_width()) - image.get_width(), scroll_pos[1])
+        actual_pos = (int(scroll_pos[0] % (self.display.get_width() + image.get_width()) - image.get_width()), int(scroll_pos[1]))
         self.display.blit(image, actual_pos)
         self.display.blit(image, (actual_pos[0] + image.get_width(), actual_pos[1]))
         self.display.blit(image, (actual_pos[0] - image.get_width(), actual_pos[1]))

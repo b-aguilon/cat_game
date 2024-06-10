@@ -1,6 +1,7 @@
 import pygame
 import math
 from scripts.asset import assets
+from enum import Enum
 
 class Collider:
     def __init__(self, _type, game, pos, size):
@@ -111,6 +112,43 @@ class Cat(Collider):
     def dodge(self):
         if self.jumps > 0:
             self.velocity[0] = self.dodge_speed if not self.flip else -self.dodge_speed
+
+    def draw(self, surf, scroll=(0,0)):
+        img = assets['cat']
+        if not self.flip:
+            surf.blit(img, (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
+        else:
+            surf.blit(pygame.transform.flip(img, True, False), (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
+
+class EnemyState(Enum):
+    WANDER = 0
+    PURSUIT = 1
+    COMBAT = 2 
+
+class Enemy(Collider):
+    def __init__(self, game, pos, size):
+        super().__init__('enemy', game, pos, size)
+        self.curr_state = EnemyState.WANDER
+
+    def update(self, tilemap, movement=(0,0), friction=0.2):
+        super().update(tilemap, movement, friction)
+
+        match self.curr_state:
+            case EnemyState.WANDER:
+                self.wander()
+            case EnemyState.PURSUIT:
+                self.pursuit()
+            case EnemyState.COMBAT:
+                self.combat()       
+    
+    def wander(self):
+        pass
+
+    def pursuit(self):
+        pass
+
+    def combat(self):
+        pass
 
     def draw(self, surf, scroll=(0,0)):
         img = assets['cat']

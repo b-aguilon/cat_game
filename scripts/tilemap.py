@@ -86,6 +86,12 @@ class Tilemap:
                 ramps.append(Ramp((tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size), self.tile_size, tile['ramp']))
         
         return ramps
+    
+    def solid_check(self, pos):
+        tile_pos = str(int(pos[0] // self.tile_size)) + ';' + str(int(pos[1] // self.tile_size))
+        if tile_pos in self.tilemap and (self.tilemap[tile_pos]['type'] in PHYS_TILE_RECTS or self.tilemap[tile_pos]['type'] == 'ramp'):
+            return True
+        return False
 
     def save(self, path):
         f = open(path, 'w')
